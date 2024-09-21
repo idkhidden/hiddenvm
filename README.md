@@ -8,7 +8,6 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 - Arithmetic Operations: Supports essential operations including addition, subtraction, multiplication, and division, enabling straightforward mathematical computations.
 - Stack Management: Utilizes a dynamic stack to efficiently manage intermediate values during calculations, ensuring robust performance.
-- Opcode Handlers: Implements a modular approach to opcode handling, allowing for easy extension and customization.
 
 ## Showcase
 
