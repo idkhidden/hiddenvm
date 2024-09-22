@@ -2,24 +2,20 @@
 #include <Windows.h>
 #include <vector>
 #include <unordered_map>
-#include <random>
-
+#include <functional>
 
 using namespace std;
 
-
-
-
-enum vmopcode 
+enum vmopcode
 {
     vmpush = 25,
-    vmpop = 44,  
+    vmpop = 44,
     vmadd = 99,
-    vmsub = 42,  
-    vmmul = 24,  
-    vmdiv = 12,  
+    vmsub = 42,
+    vmmul = 24,
+    vmdiv = 12,
     vmprint = 36,
-    vmexit = 32,
+    vmexit = 32
 };
 
 class VM
@@ -29,6 +25,70 @@ public:
     vector<uint64_t> bytecode;
     size_t instructionpointer = 0;
     bool running = true;
+    unordered_map<uint8_t, function<void()>> jumptable;
+
+    VM()
+    {
+        jumptable[vmpush] = [this]()
+            {
+                int value = bytecode[instructionpointer++];
+                stack.push_back(value);
+            };
+
+        jumptable[vmpop] = [this]()
+            {
+                if (!stack.empty())
+                {
+                    stack.pop_back();
+                }
+            };
+
+        jumptable[vmadd] = [this]()
+            {
+                int b = stack.back(); 
+                stack.pop_back();
+                int a = stack.back();
+                stack.pop_back();
+                stack.push_back(a + b);
+            };
+
+        jumptable[vmsub] = [this]()
+            {
+                int b = stack.back(); 
+                stack.pop_back();
+                int a = stack.back(); 
+                stack.pop_back();
+                stack.push_back(a - b);
+            };
+
+        jumptable[vmmul] = [this]()
+            {
+                int b = stack.back(); 
+                stack.pop_back();
+                int a = stack.back(); 
+                stack.pop_back();
+                stack.push_back(a * b);
+            };
+
+        jumptable[vmdiv] = [this]()
+            {
+                int b = stack.back(); 
+                stack.pop_back();
+                int a = stack.back(); 
+                stack.pop_back();
+                stack.push_back(a / b);
+            };
+
+        jumptable[vmprint] = [this]()
+            {
+                cout << "vmprint -> " << stack.back() << endl;
+            };
+
+        jumptable[vmexit] = [this]()
+            {
+                running = false;
+            };
+    }
 
     void execute()
     {
@@ -36,62 +96,21 @@ public:
         {
             uint8_t opcode = bytecode[instructionpointer++];
 
-            if (opcode == vmpush)
+            if (jumptable.find(opcode) != jumptable.end())
             {
-                int value = bytecode[instructionpointer++];
-                stack.push_back(value);
-            }
-            else if (opcode == vmpop)
-            {
-                if (stack.empty()) 
-                {
-                    stack.pop_back(); 
-                }
-            }
-            else if (opcode == vmadd)
-            {
-                int b = stack.back(); stack.pop_back(); 
-                int a = stack.back(); stack.pop_back(); 
-                stack.push_back(a + b);
-            }
-            else if (opcode == vmsub)
-            {
-                int b = stack.back(); stack.pop_back();
-                int a = stack.back(); stack.pop_back();
-                stack.push_back(a - b);
-            }
-            else if (opcode == vmmul)
-            {
-                int b = stack.back(); stack.pop_back();
-                int a = stack.back(); stack.pop_back();
-                stack.push_back(a * b);
-            }
-            else if (opcode == vmdiv)
-            {
-
-                int b = stack.back(); stack.pop_back();
-                int a = stack.back(); stack.pop_back();
-                stack.push_back(a / b);
-            }
-            else if (opcode == vmprint)
-            {
-                cout << "vmprint -> " << stack.back() << endl;
-            }
-            else if (opcode == vmexit)
-            {
-                running = false;
+                cout << "jumptable entry\n";
+                jumptable[opcode]();
             }
             else
             {
-                cout << "vmerror -> unknown opcode" << (int)opcode << endl;
+                cout << "vmerror -> unknown opcode " << (int)opcode << endl;
                 running = false;
             }
         }
     }
-    
 };
 
-int main() 
+int main()
 {
     VM vm;
 
@@ -99,13 +118,14 @@ int main()
     vm.bytecode =
     {
         vmpush, 1337,   
-        vmpush, 69,   
-        vmdiv,         
-        vmprint,      
-        vmexit         
+        vmpush, 69,     
+        vmdiv,          
+        vmprint,       
+        vmexit           
     };
 
-   cout << "vmexecute entry\n";
-   vm.execute();
+    cout << "vmexecute entry\n";
+    vm.execute();
 
+    return 0;
 }
