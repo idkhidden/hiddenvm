@@ -11,7 +11,8 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 ## Showcase
 
-![image](https://github.com/user-attachments/assets/437b1fdb-f021-4c76-b73c-ef4bdf7eaa98)
+![image](https://github.com/user-attachments/assets/6f565881-f330-4a6f-973e-13ba9d23b52e)
+
 
 ## License
 HiddenVm is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
