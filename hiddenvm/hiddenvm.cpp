@@ -13,9 +13,9 @@ enum vmopcode
     vmsub = 42,
     vmmul = 24,
     vmdiv = 12,
-    vmmod,
+    vmmod = 69,
     vmprint = 36,
-    vmexit = 32
+    vmexit = 84
 };
 
 class VM
@@ -25,17 +25,17 @@ public:
     vector<uint64_t> bytecode; 
     size_t instructionpointer = 0;
     bool running = true;
-    unordered_map<uint8_t, function<void()>> jumptable;
+    unordered_map < uint8_t,function<void()>> vmhandler;
 
     VM()
     {
-        jumptable[vmpush] = [this]()
+        vmhandler[vmpush] = [this]()
             {
                 uint8_t value = bytecode[instructionpointer++];
                 stack.push_back(value);
             };
 
-        jumptable[vmpop] = [this]()
+        vmhandler[vmpop] = [this]()
             {
                 if (!stack.empty())
                 {
@@ -43,7 +43,7 @@ public:
                 }
             };
 
-        jumptable[vmadd] = [this]()
+        vmhandler[vmadd] = [this]()
             {
                 int b = stack.back();
                 stack.pop_back();
@@ -52,7 +52,7 @@ public:
                 stack.push_back(a + b);
             };
 
-        jumptable[vmsub] = [this]()
+        vmhandler[vmsub] = [this]()
             {
                 int b = stack.back();
                 stack.pop_back();
@@ -61,7 +61,7 @@ public:
                 stack.push_back(a - b);
             };
 
-        jumptable[vmmul] = [this]()
+        vmhandler[vmmul] = [this]()
             {
                 int b = stack.back();
                 stack.pop_back();
@@ -70,7 +70,7 @@ public:
                 stack.push_back(a * b);
             };
 
-        jumptable[vmdiv] = [this]()
+        vmhandler[vmdiv] = [this]()
             {
                 int b = stack.back();
                 stack.pop_back();
@@ -78,7 +78,7 @@ public:
                 stack.pop_back();
                 stack.push_back(a / b);
             };
-        jumptable[vmmod] = [this]()
+        vmhandler[vmmod] = [this]()
             {
                 int b = stack.back();
                 stack.pop_back();
@@ -87,7 +87,7 @@ public:
                 stack.push_back(a % b);
             };
 
-        jumptable[vmprint] = [this]()
+        vmhandler[vmprint] = [this]()
             {
                 if (!stack.empty())
                 {
@@ -95,7 +95,7 @@ public:
                 }
             };
 
-        jumptable[vmexit] = [this]()
+        vmhandler[vmexit] = [this]()
             {
                 running = false;
             };
@@ -107,9 +107,9 @@ public:
         {
             uint8_t opcode = bytecode[instructionpointer++];
 
-            if (jumptable.find(opcode) != jumptable.end())
+            if (vmhandler.find(opcode) != vmhandler.end())
             {
-                jumptable[opcode]();
+                vmhandler[opcode]();
             }
             else
             {
