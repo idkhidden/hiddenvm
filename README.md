@@ -11,7 +11,7 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 ## Showcase
 
-![image](https://github.com/user-attachments/assets/6f565881-f330-4a6f-973e-13ba9d23b52e)
+![image](https://github.com/user-attachments/assets/7eb28590-413f-471f-bbed-9e9771e62707)
 
 
 ## License
