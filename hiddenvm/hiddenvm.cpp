@@ -98,7 +98,6 @@ public:
 
             if (jumptable.find(opcode) != jumptable.end())
             {
-                cout << "jumptable entry\n";
                 jumptable[opcode]();
             }
             else
