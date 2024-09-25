@@ -1,3 +1,7 @@
+/*
+* hiddenvm
+* https://github.com/idkhidden/
+*/
 #include <iostream>
 #include <vector>
 #include <unordered_map>
@@ -31,7 +35,7 @@ public:
     {
         vmhandler[vmpush] = [this]()
             {
-                uint8_t value = bytecode[instructionpointer++];
+                uint64_t value = bytecode[instructionpointer++];
                 stack.push_back(value);
             };
 
@@ -105,7 +109,7 @@ public:
     {
         while (running && instructionpointer < bytecode.size())
         {
-            uint8_t opcode = bytecode[instructionpointer++];
+            uint64_t opcode = bytecode[instructionpointer++];
 
             if (vmhandler.find(opcode) != vmhandler.end())
             {
