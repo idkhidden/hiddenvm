@@ -6,7 +6,7 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 ## Features
 
-- Arithmetic Operations: Supports essential operations including addition, subtraction, multiplication, division and modulo, enabling straightforward mathematical computations.
+- Arithmetic Operations: Supports arithmetic operations, enabling straightforward mathematical computations.
 - Stack Management: Utilizes a dynamic stack to efficiently manage intermediate values during calculations, ensuring robust performance.
 
 ## Showcase
