@@ -25,7 +25,7 @@ public:
     vector<uint64_t> bytecode; 
     size_t instructionpointer = 0;
     bool running = true;
-    unordered_map < uint8_t,function<void()>> vmhandler;
+    unordered_map < uint64_t,function<void()>> vmhandler;
 
     VM()
     {
