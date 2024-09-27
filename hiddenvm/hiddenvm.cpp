@@ -2,6 +2,7 @@
 * hiddenvm
 * https://github.com/idkhidden/
 */
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
@@ -11,15 +12,15 @@ using namespace std;
 
 enum vmopcode
 {
-    vmpush = 25,
-    vmpop = 44,
-    vmadd = 99,
-    vmsub = 42,
-    vmmul = 24,
-    vmdiv = 12,
-    vmmod = 69,
-    vmprint = 36,
-    vmexit = 84
+    vmpush = 0x764,
+    vmpop = 0x235,
+    vmadd = 0x001,
+    vmsub = 0x342,
+    vmmul = 0x573,
+    vmdiv = 0x999,
+    vmmod = 0x144,
+    vmprint = 0x346,
+    vmexit = 0x831
 };
 
 class VM
@@ -28,8 +29,8 @@ public:
     vector<uint64_t> stack;
     vector<uint64_t> bytecode; 
     size_t instructionpointer = 0;
+    unordered_map < uint64_t, function<void()>> vmhandler;
     bool running = true;
-    unordered_map < uint64_t,function<void()>> vmhandler;
 
     VM()
     {
@@ -131,7 +132,7 @@ int main()
     cout << "bytecode entry\n";
     vm.bytecode =
     {
-        vmpush, 5,        
+        vmpush, 5,
         vmpush, 10,     
         vmadd,           
         vmprint,
