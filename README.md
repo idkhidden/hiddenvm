@@ -15,4 +15,4 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 
 ## License
-HiddenVm is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+HiddenVM is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
