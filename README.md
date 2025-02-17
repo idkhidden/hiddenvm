@@ -8,7 +8,8 @@ Stack based arithmetic only virtual machine (VM) executes bytecode instructions 
 
 - Arithmetic Operations: Supports arithmetic operations, enabling straightforward mathematical computations.
 - Stack Management: Utilizes a dynamic stack to efficiently manage intermediate values during calculations, ensuring robust performance.
-
+- Rolling Opcodes: Generates pseudo-random opcodes based on a seed and bitwise operations.
+  
 ## Showcase
 
 ![image](https://github.com/user-attachments/assets/7eb28590-413f-471f-bbed-9e9771e62707)
