@@ -10,17 +10,23 @@
 
 using namespace std;
 
+constexpr unsigned long long rollingopcode(unsigned long long seed) 
+{
+    return ((seed * 0x9efdead7c15ULL) ^ (seed >> 32) ^ (seed * 0x7f4abeef7c15ULL)) % 1000000;
+
+}
+
 enum vmopcode
 {
-    vmpush = 0x764,
-    vmpop = 0x235,
-    vmadd = 0x001,
-    vmsub = 0x342,
-    vmmul = 0x573,
-    vmdiv = 0x999,
-    vmmod = 0x144,
-    vmprint = 0x346,
-    vmexit = 0x831
+    vmpush = rollingopcode(1),
+    vmpop = rollingopcode(22),
+    vmadd = rollingopcode(333),
+    vmsub = rollingopcode(4444),
+    vmmul = rollingopcode(55555),
+    vmdiv = rollingopcode(666666),
+    vmmod = rollingopcode(7777777),
+    vmprint = rollingopcode(88888888),
+    vmexit = rollingopcode(999999999)
 };
 
 class VM
@@ -54,7 +60,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a + b);
+                stack.push_back((a ^ b) + 2 * (a & b));  // a + b
             };
 
         vmhandler[vmsub] = [this]()
@@ -63,7 +69,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a - b);
+                stack.push_back((a ^ b) - 2 * (~a & b)); // a - b
             };
 
         vmhandler[vmmul] = [this]()
@@ -72,7 +78,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a * b);
+                stack.push_back((a << 1) * (b >> 1) + (a * (b & 1)) + (b * (a & 1))); // a * b
             };
 
         vmhandler[vmdiv] = [this]()
@@ -81,7 +87,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a / b);
+                stack.push_back((a - (a - ((a / b) * b))) / b); // a / b
             };
         vmhandler[vmmod] = [this]()
             {
@@ -89,7 +95,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a % b);
+                stack.push_back(a - ((a - (a - ((a / b) * b))) / b) * b);  // a & b
             };
 
         vmhandler[vmprint] = [this]()
@@ -118,7 +124,7 @@ public:
             }
             else
             {
-                cout << "vmerror -> unknown opcode " << (int)opcode << endl;
+                cout << "vmerror -> unknown handler with opcode -> " << (int)opcode << endl;
                 running = false;
             }
         }
@@ -127,10 +133,9 @@ public:
 
 int main()
 {
-    VM vm;
+    VM hiddenvm;
 
-    cout << "bytecode entry\n";
-    vm.bytecode =
+    hiddenvm.bytecode =
     {
         vmpush, 5,
         vmpush, 10,     
@@ -156,11 +161,10 @@ int main()
         vmpush, 10,
         vmmod,
         vmprint,
-        vmexit
+        vmexit    
     };
 
-    cout << "vmexecute entry\n";
-    vm.execute();
+    hiddenvm.execute();
 
     return 0;
 }
