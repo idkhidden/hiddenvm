@@ -60,7 +60,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back((a ^ b) + 2 * (a & b));  // a + b
+                stack.push_back(a + b);  
             };
 
         vmhandler[vmsub] = [this]()
@@ -69,7 +69,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back((a ^ b) - 2 * (~a & b)); // a - b
+                stack.push_back(a - b); 
             };
 
         vmhandler[vmmul] = [this]()
@@ -78,7 +78,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back((a << 1) * (b >> 1) + (a * (b & 1)) + (b * (a & 1))); // a * b
+                stack.push_back(a * b); 
             };
 
         vmhandler[vmdiv] = [this]()
@@ -87,7 +87,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back((a - (a - ((a / b) * b))) / b); // a / b
+                stack.push_back(a / b);
             };
         vmhandler[vmmod] = [this]()
             {
@@ -95,7 +95,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a - ((a - (a - ((a / b) * b))) / b) * b);  // a & b
+                stack.push_back(a & b);  
             };
 
         vmhandler[vmprint] = [this]()
@@ -161,7 +161,8 @@ int main()
         vmpush, 10,
         vmmod,
         vmprint,
-        vmexit    
+        vmexit,
+        
     };
 
     hiddenvm.execute();
