@@ -18,7 +18,7 @@ constexpr unsigned long long rollingopcode(unsigned long long seed)
 
 enum vmopcode
 {
-    vmpush = rollingopcode(1),
+    vmpush = rollingopcode(1337),
     vmpop = rollingopcode(22),
     vmadd = rollingopcode(333),
     vmsub = rollingopcode(4444),
@@ -33,8 +33,8 @@ class VM
 {
 public:
     vector<uint64_t> stack;
-    vector<uint64_t> bytecode; 
-    size_t instructionpointer = 0;
+    vector<uint64_t> bytecode;
+    size_t vip = 0;
     unordered_map < uint64_t, function<void()>> vmhandler;
     bool running = true;
 
@@ -42,7 +42,7 @@ public:
     {
         vmhandler[vmpush] = [this]()
             {
-                uint64_t value = bytecode[instructionpointer++];
+                uint64_t value = bytecode[vip++];
                 stack.push_back(value);
             };
 
@@ -60,7 +60,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a + b);  
+                stack.push_back(a + b);
             };
 
         vmhandler[vmsub] = [this]()
@@ -69,7 +69,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a - b); 
+                stack.push_back(a - b);
             };
 
         vmhandler[vmmul] = [this]()
@@ -78,7 +78,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a * b); 
+                stack.push_back(a * b);
             };
 
         vmhandler[vmdiv] = [this]()
@@ -95,7 +95,7 @@ public:
                 stack.pop_back();
                 int a = stack.back();
                 stack.pop_back();
-                stack.push_back(a & b);  
+                stack.push_back(a & b);
             };
 
         vmhandler[vmprint] = [this]()
@@ -111,12 +111,11 @@ public:
                 running = false;
             };
     }
-
     void execute()
     {
-        while (running && instructionpointer < bytecode.size())
+        while (running && vip < bytecode.size())
         {
-            uint64_t opcode = bytecode[instructionpointer++];
+            uint64_t opcode = bytecode[vip++];
 
             if (vmhandler.find(opcode) != vmhandler.end())
             {
@@ -161,8 +160,7 @@ int main()
         vmpush, 10,
         vmmod,
         vmprint,
-        vmexit,
-        
+        vmexit,    
     };
 
     hiddenvm.execute();
